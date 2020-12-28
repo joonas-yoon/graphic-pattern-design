@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title></title>
+  <style>
+    html, body {
+      overflow: hidden;
+    }
+    .row {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .pat {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      background: url(chevron-up-solid.svg) center no-repeat;
+    }
+  </style>
+</head>
+<body>
+</body>
+<script type="text/javascript">
+  function angle(cx, cy, ex, ey) {
+    var dy = ey - cy;
+    var dx = ex - cx;
+    var theta = Math.atan2(dy, dx); // range (-PI, PI]
+    theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
+    //if (theta < 0) theta = 360 + theta; // range [0, 360)
+    return theta;
+  }
+  
+  var pats;
+
+  function rotatePatterns(e){
+      // MouseEvent {isTrusted: true, screenX: 409, screenY: 723, clientX: 409, clientY: 620, …}
+      pats.forEach(function(p, i){
+        var rect = p.getBoundingClientRect();
+        var cx = rect.left + 25;
+        var cy = rect.top + 25;
+        
+        let deg = angle(cx, cy, e.clientX, e.clientY) + 90;
+        p.style.webkitTransform = 'rotate('+deg+'deg)'; 
+        p.style.mozTransform    = 'rotate('+deg+'deg)'; 
+        p.style.msTransform     = 'rotate('+deg+'deg)'; 
+        p.style.oTransform      = 'rotate('+deg+'deg)'; 
+        p.style.transform       = 'rotate('+deg+'deg)'; 
+      });
+    }
+
+  function setup() {
+    console.log('resize');
+    while (document.body.firstChild) {
+      document.body.removeChild(document.body.firstChild);
+    }
+
+    // create elements
+    for (var i = 0 ; i < window.outerHeight / 50; ++i) {
+      let row = document.createElement('div');
+      row.setAttribute('class', 'row');
+      for (var j = 0 ; j < window.outerWidth / 50; ++j) {
+        let col = document.createElement('div');
+        col.setAttribute('class', 'pat');
+        row.appendChild(col);
+      }
+      document.body.appendChild(row);
+    }
+
+    // add event listener
+    pats = document.querySelectorAll('.pat');
+    document.removeEventListener('mousemove', rotatePatterns);
+    document.addEventListener('mousemove', rotatePatterns);
+  }
+
+  window.addEventListener('load', function(){
+    setup();
+    window.addEventListener('resize', setup);
+  });
+</script>
+</html>
