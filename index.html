@@ -6,6 +6,9 @@
   <style>
     html, body {
       overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      -webkit-overflow-scrolling: unset;
     }
     .row {
       overflow: hidden;
@@ -34,6 +37,8 @@
   var pats;
 
   function rotatePatterns(e){
+    e.preventDefault();
+
       // MouseEvent {isTrusted: true, screenX: 409, screenY: 723, clientX: 409, clientY: 620, …}
       pats.forEach(function(p, i){
         var rect = p.getBoundingClientRect();
@@ -50,7 +55,6 @@
     }
 
   function setup() {
-    console.log('resize');
     while (document.body.firstChild) {
       document.body.removeChild(document.body.firstChild);
     }
@@ -71,11 +75,14 @@
     pats = document.querySelectorAll('.pat');
     document.removeEventListener('mousemove', rotatePatterns);
     document.addEventListener('mousemove', rotatePatterns);
+    document.removeEventListener('touchmove', rotatePatterns, false);
+    document.addEventListener('touchmove', rotatePatterns, false);
   }
 
   window.addEventListener('load', function(){
     setup();
     window.addEventListener('resize', setup);
   });
+
 </script>
 </html>
